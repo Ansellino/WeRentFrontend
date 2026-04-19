@@ -55,7 +55,7 @@ export default function OrderDetailPage() {
                </p>
 
               <p className="text-sm text-gray-500">
-                  Rental Period: {formatDate(item.startDate)} to {formatDate(item.endDate)}
+                  Rental Date: {formatDate(item.startDate)} to {formatDate(item.endDate)}
                </p>
             </div>
 
