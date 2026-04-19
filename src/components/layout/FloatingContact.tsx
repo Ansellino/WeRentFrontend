@@ -7,7 +7,6 @@ import Link from "next/link";
 export default function FloatingContact() {
   const [isOpen, setIsOpen] = useState(false);
 
-  // Ganti dengan nomor WhatsApp CS WeRent yang sebenarnya (tanpa + atau 0 di depan)
   const waNumber = "6281234567890"; 
   const waMessage = "Halo WeRent, saya butuh bantuan mengenai koleksi...";
 
@@ -38,7 +37,6 @@ export default function FloatingContact() {
           <Mail className="h-4 w-4 text-neutral-500" strokeWidth={1.5} />
         </a>
 
-        {/* Tombol WhatsApp (Highlight dengan warna gelap) */}
         <a 
           href={`https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`}
           target="_blank"
@@ -50,7 +48,6 @@ export default function FloatingContact() {
         </a>
       </div>
 
-      {/* Main Floating Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={`h-14 w-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
