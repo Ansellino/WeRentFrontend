@@ -2,6 +2,8 @@ import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Navbar } from '@/components/layout/Navbar'
+
 
 const highlights = [
   {
@@ -20,7 +22,9 @@ const highlights = [
 
 export default function Home() {
   return (
+    
     <div className='min-h-screen bg-gradient-to-b from-emerald-50 via-white to-white'>
+      <Navbar />
       <main className='container mx-auto max-w-6xl px-4 py-14 sm:py-20'>
         <section className='mx-auto max-w-3xl text-center'>
           <Badge className='bg-emerald-700 text-white hover:bg-emerald-700'>
