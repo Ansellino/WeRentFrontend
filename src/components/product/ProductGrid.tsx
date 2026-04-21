@@ -13,11 +13,9 @@ interface ProductGridProps {
 
 export default function ProductGrid({ products, isLoading = false }: ProductGridProps) {
   const [displayCount, setDisplayCount] = useState(8);
-  const [isFetching, setIsFetching] = useState(false); // State baru untuk melacak proses
+  const [isFetching, setIsFetching] = useState(false); 
   const observerTarget = useRef(null);
 
-  // KUNCI PERBAIKAN: Gunakan useRef untuk menyimpan nilai terbaru 
-  // agar tidak memicu render ulang (infinite loop) pada useEffect observer
   const countRef = useRef(displayCount);
   countRef.current = displayCount;
 
@@ -27,26 +25,26 @@ export default function ProductGrid({ products, isLoading = false }: ProductGrid
   const fetchingRef = useRef(isFetching);
   fetchingRef.current = isFetching;
 
-  // Reset saat filter berubah
+
   useEffect(() => {
     setDisplayCount(8); 
   }, [products]);
 
-  // Logika Infinite Scroll (Diperbaiki)
+  
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        // Gunakan .current untuk mengecek nilai terbaru
+       
         if (
           entries[0].isIntersecting && 
           !fetchingRef.current && 
           countRef.current < productsLenRef.current
         ) {
-          setIsFetching(true); // Kunci pintu agar tidak ke-trigger berkali-kali
+          setIsFetching(true); 
 
           setTimeout(() => {
             setDisplayCount((prev) => prev + 4);
-            setIsFetching(false); // Buka kembali kuncinya setelah berhasil memuat
+            setIsFetching(false); 
           }, 800);
         }
       },
@@ -56,7 +54,7 @@ export default function ProductGrid({ products, isLoading = false }: ProductGrid
     if (observerTarget.current) observer.observe(observerTarget.current);
     
     return () => observer.disconnect();
-  }, []); // <-- Array kosong! Observer cukup dibuat 1 kali saja seumur hidup komponen
+  }, []); 
 
   if (isLoading) {
     return (

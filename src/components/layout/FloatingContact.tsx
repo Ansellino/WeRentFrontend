@@ -6,7 +6,6 @@ import Link from "next/link";
 
 export default function FloatingContact() {
   const [isOpen, setIsOpen] = useState(false);
-
   const waNumber = "6281234567890"; 
   const waMessage = "Halo WeRent, saya butuh bantuan mengenai koleksi...";
 

@@ -71,7 +71,7 @@ const FloatingMenu = () => {
   );
 };
 
-// Sub-component untuk list agar kode lebih bersih
+
 const MenuLink = ({ icon, label }: { icon: React.ReactNode, label: string }) => (
   <button className="group flex w-full items-center gap-4 border-b border-gray-100 pb-3 text-[#6322d3] transition-all hover:opacity-60">
     <span className="text-[#6322d3]">{icon}</span>
