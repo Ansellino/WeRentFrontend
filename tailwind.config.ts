@@ -5,11 +5,11 @@ const config: Config = {
   content: ["./src/pages/**/*.{js,ts,jsx,tsx,mdx}", "./src/components/**/*.{js,ts,jsx,tsx,mdx}", "./src/app/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     extend: {
-      // --- TAMBAHAN UNTUK FONT MARCELLUS ---
+      
       fontFamily: {
         marcellus: ["var(--font-marcellus)", "serif"],
       },
-      // -------------------------------------
+     
       
       colors: {
         border: "oklch(var(--border))",

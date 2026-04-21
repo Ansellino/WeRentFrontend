@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-// 1. Tambahkan Marcellus di baris import ini
 import { Inter, Marcellus } from "next/font/google"; 
 import "./globals.css";
 import { Providers } from "./providers";
@@ -7,11 +6,11 @@ import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
-// 2. Buat konfigurasi untuk font Marcellus
+
 const marcellus = Marcellus({ 
-  weight: "400", // Marcellus hanya memiliki weight 400
+  weight: "400",
   subsets: ["latin"],
-  variable: "--font-marcellus", // Daftarkan sebagai variabel CSS
+  variable: "--font-marcellus",
 });
 
 export const metadata: Metadata = {
