@@ -45,6 +45,7 @@ export interface ProductListItem {
   images: string[]
   avgRating: number
   totalReviews: number
+  
 }
 
 export interface Availability {
