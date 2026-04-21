@@ -5,11 +5,11 @@ type Category = {
 
 async function getCategories(): Promise<Category[]> {
   try {
-    const res = await fetch("https://werentbackend.onrender.com/api/products", {
+    const res = await fetch('https://werentbackend.onrender.com/api/products', {
       next: { revalidate: 60 }, // caching (ISR)
     });
 
-    if (!res.ok) throw new Error("Failed");
+    if (!res.ok) throw new Error('Failed');
 
     const data = await res.json();
     return data.data || [];
@@ -27,7 +27,9 @@ export async function Footer() {
         {/* Brand */}
         <div>
           <h2 className="text-xl font-semibold mb-3">WeRent</h2>
-          <p className="text-gray-600">Discover premium fashion rental for every occasion.</p>
+          <p className="text-gray-600">
+            Discover premium fashion rental for every occasion.
+          </p>
         </div>
 
         {/* Explore */}
@@ -43,6 +45,9 @@ export async function Footer() {
             <li>
               <a href="/register">Join Us</a>
             </li>
+            <li>
+              <a href="/faq">FAQ</a>
+            </li>
           </ul>
         </div>
 
@@ -53,7 +58,10 @@ export async function Footer() {
             {categories.length > 0 ? (
               categories.slice(0, 3).map((cat) => (
                 <li key={cat.id}>
-                  <a href={`/products?category=${cat.id}`} className="hover:text-black">
+                  <a
+                    href={`/products?category=${cat.id}`}
+                    className="hover:text-black"
+                  >
                     {cat.name}
                   </a>
                 </li>
@@ -72,7 +80,9 @@ export async function Footer() {
         </div>
       </div>
 
-      <div className="border-t py-4 text-center text-xs text-gray-500">© {new Date().getFullYear()} WeRent</div>
+      <div className="border-t py-4 text-center text-xs text-gray-500">
+        © {new Date().getFullYear()} WeRent
+      </div>
     </footer>
   );
 }
