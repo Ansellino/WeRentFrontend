@@ -1,10 +1,17 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Marcellus } from "next/font/google"; 
 import "./globals.css";
 import { Providers } from "./providers";
 import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
+
+
+const marcellus = Marcellus({ 
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-marcellus",
+});
 
 export const metadata: Metadata = {
   title: "WeRent — We Rent, We Return, We Repeat",
@@ -18,7 +25,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      {/* 3. Sisipkan variabel marcellus ke dalam class body */}
+      <body className={`${inter.className} ${marcellus.variable}`}>
         <Providers>
           {children}
           <Toaster />
