@@ -19,11 +19,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   const imageSrc =
     rawImage && rawImage.trim() !== ""
-      ? rawImage.includes("placehold.co")
-        ? rawImage.includes("/png") || rawImage.includes(".png")
-          ? rawImage
-          : rawImage.replace("placehold.co/400x600?", "placehold.co/400x600/png?")
-        : rawImage
+      ? rawImage
       : `https://placehold.co/400x600/png?text=${encodeURIComponent(product.name)}`;
 
   const isPlaceholder = imageSrc.includes("placehold.co");
