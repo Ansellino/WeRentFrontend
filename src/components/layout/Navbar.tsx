@@ -1,133 +1,129 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
-import { useAuthStore } from '@/lib/stores/authStore'
-import { useState } from 'react'
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
+import { useAuth } from "@/lib/hooks/useAuth";
+import { useAuthStore } from "@/lib/stores/authStore";
 
 export function Navbar() {
-  const pathname = usePathname()
-  const router = useRouter()
-  const [open, setOpen] = useState(false)
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
 
-  const user = useAuthStore(s => s.user)
-  const isAuthenticated = useAuthStore(s => s.isAuthenticated)
-  const logout = useAuthStore(s => s.logout)
-  const hasHydrated = useAuthStore(s => s.hasHydrated)
+  const { logout, isLoggingOut, user } = useAuth();
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const hasHydrated = useAuthStore((s) => s.hasHydrated);
 
-  if (!hasHydrated) return null
+  if (!hasHydrated) return null;
 
-  const isActive = (href: string) =>
-    pathname === href
-      ? 'text-green-700'
-      : 'text-gray-700 hover:text-green-700'
+  const isActive = (href: string) => (pathname === href ? "text-green-700 font-medium" : "text-gray-700 hover:text-green-700");
 
   const handleLogout = () => {
-    logout()
-    router.push('/login')
-  }
+    logout();
+  };
 
   return (
-    <header className='border-b bg-white'>
-      <nav className='container mx-auto flex h-14 max-w-5xl items-center justify-between px-4'>
-        
-        <Link href='/' className='text-lg font-semibold text-green-700'>
+    <header className="border-b bg-white">
+      <nav className="container mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
+        {/* LOGO */}
+        <Link href="/" className="text-lg font-semibold text-green-700">
           WeRent
         </Link>
 
-        <div className='hidden md:flex items-center gap-4 text-sm'>
-          <Link href='/products' className={isActive('/products')}>
+        {/* DESKTOP */}
+        <div className="hidden md:flex items-center gap-6 text-sm">
+          <Link href="/products" className={isActive("/products")}>
             Products
           </Link>
 
           {isAuthenticated ? (
             <>
-              <Link href='/wishlist' className={isActive('/wishlist')}>
+              <Link href="/wishlist" className={isActive("/wishlist")}>
                 Wishlist
               </Link>
 
-              <Link href='/orders' className={isActive('/orders')}>
+              <Link href="/orders" className={isActive("/orders")}>
                 Orders
               </Link>
 
-              <Link href='/cart' className={isActive('/cart')}>
+              <Link href="/cart" className={isActive("/cart")}>
                 Cart
               </Link>
 
-              <span className='text-gray-500'>
-                Hi, {user?.name?.split(' ')[0]}
-              </span>
+              <Link href="/profile" className="text-gray-700 hover:text-green-700">
+                {user?.name?.split(" ")[0]}
+              </Link>
 
-              <button
-                onClick={handleLogout}
-                className='text-gray-700 hover:text-red-500'
-              >
-                Logout
+              <button onClick={handleLogout} disabled={isLoggingOut} className="text-gray-700 hover:text-red-500 disabled:opacity-50">
+                {isLoggingOut ? "Logging out..." : "Logout"}
               </button>
             </>
           ) : (
             <>
-              <Link href='/login' className={isActive('/login')}>
+              <Link href="/login" className={isActive("/login")}>
                 Login
               </Link>
 
-              <Link href='/register' className='text-green-700 font-medium'>
+              <Link href="/register" className="text-green-700 font-medium">
                 Register
               </Link>
             </>
           )}
         </div>
 
-        {/* Burger */}
-        <button
-          onClick={() => setOpen(!open)}
-          className='md:hidden flex flex-col gap-1'
-        >
-          <span className='w-5 h-0.5 bg-gray-700'></span>
-          <span className='w-5 h-0.5 bg-gray-700'></span>
-          <span className='w-5 h-0.5 bg-gray-700'></span>
+        {/* BURGER / X BUTTON */}
+        <button onClick={() => setOpen(!open)} className="md:hidden relative w-6 h-6">
+          <span className={`absolute left-0 top-1/2 w-6 h-0.5 bg-gray-700 transition-all duration-300 ${open ? "rotate-45" : "-translate-y-2"}`}></span>
+
+          <span className={`absolute left-0 top-1/2 w-6 h-0.5 bg-gray-700 transition-all duration-300 ${open ? "opacity-0" : ""}`}></span>
+
+          <span className={`absolute left-0 top-1/2 w-6 h-0.5 bg-gray-700 transition-all duration-300 ${open ? "-rotate-45" : "translate-y-2"}`}></span>
         </button>
       </nav>
 
-      {/* Mobile */}
+      {/* MOBILE MENU */}
       {open && (
-        <div className='md:hidden border-t bg-white px-4 py-3 space-y-3 text-sm'>
-          <Link href='/products' className={isActive('/products')}>
+        <div className="md:hidden fixed inset-0 top-14 z-40 bg-white px-4 py-4 space-y-3 text-sm">
+          <Link href="/products" onClick={() => setOpen(false)} className={`block ${isActive("/products")}`}>
             Products
           </Link>
 
           {isAuthenticated ? (
             <>
-              <Link href='/wishlist' className={isActive('/wishlist')}>
+              <Link href="/wishlist" onClick={() => setOpen(false)} className={`block ${isActive("/wishlist")}`}>
                 Wishlist
               </Link>
 
-              <Link href='/orders' className={isActive('/orders')}>
+              <Link href="/orders" onClick={() => setOpen(false)} className={`block ${isActive("/orders")}`}>
                 Orders
               </Link>
 
-              <Link href='/cart' className={isActive('/cart')}>
+              <Link href="/cart" onClick={() => setOpen(false)} className={`block ${isActive("/cart")}`}>
                 Cart
               </Link>
 
-              <div className='text-gray-500'>
-                Hi, {user?.name?.split(' ')[0]}
-              </div>
+              <Link href="/profile" onClick={() => setOpen(false)} className="block pt-2 border-t text-gray-700 hover:text-green-700">
+                {user?.name?.split(" ")[0]}{" "}
+              </Link>
 
               <button
-                onClick={handleLogout}
-                className='text-left text-gray-700 hover:text-red-500'
+                onClick={() => {
+                  setOpen(false);
+                  handleLogout();
+                }}
+                disabled={isLoggingOut}
+                className="w-full text-left text-red-500 disabled:opacity-50"
               >
-                Logout
+                {isLoggingOut ? "Logging out..." : "Logout"}
               </button>
             </>
           ) : (
             <>
-              <Link href='/login' className={isActive('/login')}>
+              <Link href="/login" onClick={() => setOpen(false)} className={`block ${isActive("/login")}`}>
                 Login
               </Link>
 
-              <Link href='/register' className='text-green-700 font-medium'>
+              <Link href="/register" onClick={() => setOpen(false)} className="block text-green-700 font-medium">
                 Register
               </Link>
             </>
@@ -135,5 +131,5 @@ export function Navbar() {
         </div>
       )}
     </header>
-  )
+  );
 }

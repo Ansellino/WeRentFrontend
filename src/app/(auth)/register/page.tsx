@@ -5,6 +5,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 import { authApi } from "@/lib/api/auth";
 import { useAuthStore } from "@/lib/stores/authStore";
@@ -14,7 +15,7 @@ const schema = z
   .object({
     name: z.string().min(2, "Nama minimal 2 karakter"),
     email: z.string().email("Email tidak valid"),
-    password: z.string().min(6, "Minimal 6 karakter"),
+    password: z.string().min(8, "Minimal 8 karakter"),
     confirmPassword: z.string(),
     avatarUrl: z.string().url("URL tidak valid").optional().or(z.literal("")),
   })
@@ -35,8 +36,17 @@ type AuthError = {
 
 export default function RegisterPage() {
   const router = useRouter();
-  const setAuth = useAuthStore((s) => s.setAuth);
   const { toast } = useToast();
+
+  const user = useAuthStore((s) => s.user);
+  const hasHydrated = useAuthStore((s) => s.hasHydrated);
+
+  // ✅ Auth guard tetap jalan
+  useEffect(() => {
+    if (hasHydrated && user) {
+      router.replace("/");
+    }
+  }, [user, hasHydrated, router]);
 
   const {
     register,
@@ -49,17 +59,13 @@ export default function RegisterPage() {
   const { mutate, isPending } = useMutation({
     mutationFn: authApi.register,
 
-    onSuccess: (res) => {
-      const { access_token, refresh_token, user } = res.data;
-
-      setAuth(access_token, refresh_token, user);
-
+    onSuccess: () => {
       toast({
         title: "Berhasil",
-        description: "Akun berhasil dibuat",
+        description: "Akun berhasil dibuat, silakan login",
       });
 
-      router.push("/dashboard");
+      router.replace("/login");
     },
 
     onError: (error: AuthError) => {
@@ -80,69 +86,81 @@ export default function RegisterPage() {
     });
   };
 
+  // ✅ Prevent flicker
+  if (!hasHydrated) return null;
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#047857] px-4 font-mono">
-      {/* Background pattern */}
-      <div className="absolute inset-0 opacity-20 bg-[linear-gradient(#000_1px,transparent_1px),linear-gradient(90deg,#000_1px,transparent_1px)] bg-[size:40px_40px]" />
+    <div className="min-h-screen grid md:grid-cols-2">
+      {/* ================= LEFT (BRANDING) ================= */}
+      <div className="hidden md:flex flex-col justify-center bg-green-700 text-white p-12 relative overflow-hidden">
+        {/* Blur decoration */}
+        <div className="absolute w-72 h-72 bg-green-500 rounded-full blur-3xl opacity-30 top-10 left-10" />
+        <div className="absolute w-72 h-72 bg-green-900 rounded-full blur-3xl opacity-30 bottom-10 right-10" />
 
-      <div className="relative w-full max-w-md bg-[#047857] border-4 border-black shadow-[6px_6px_0px_#000] p-6">
-        <h1 className="text-2xl text-center mb-6 text-white tracking-widest">REGISTER</h1>
+        <div className="relative z-10 space-y-6 max-w-md">
+          <p className="text-sm bg-white/10 inline-block px-3 py-1 rounded-full">We Rent, We Return, We Repeat</p>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* NAME */}
-          <div>
-            <label className="block text-sm mb-1 text-white">
-              Nama<span className="text-red-400">*</span>
-            </label>
-            <input {...register("name")} required className="w-full bg-[#c2b280] border-2 border-black px-3 py-2 focus:outline-none" />
-            {errors.name && <p className="text-red-400 text-sm mt-1">{errors.name.message}</p>}
+          <h1 className="text-4xl font-bold leading-tight">Start Your Fashion Journey</h1>
+
+          <p className="text-white/80">Rent premium outfits, manage bookings, and return with ease — all in one platform.</p>
+
+          <div className="space-y-2 text-sm text-white/90">
+            <p>✔ Curated premium collections</p>
+            <p>✔ Flexible rental dates</p>
+            <p>✔ Easy return system</p>
+          </div>
+        </div>
+      </div>
+
+      {/* ================= RIGHT (FORM) ================= */}
+      <div className="flex items-center justify-center bg-[#f3f7f5] px-4 py-10">
+        <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 space-y-6 border border-gray-100">
+          {/* Header */}
+          <div className="text-center space-y-2">
+            <p className="text-xs bg-green-100 text-green-700 inline-block px-3 py-1 rounded-full font-medium">Join WeRent</p>
+            <h1 className="text-3xl font-bold text-gray-900">Create Account</h1>
+            <p className="text-sm text-gray-500">Start renting today</p>
           </div>
 
-          {/* EMAIL */}
-          <div>
-            <label className="block text-sm mb-1 text-white">
-              Email<span className="text-red-400">*</span>{" "}
-            </label>
-            <input {...register("email")} required className="w-full bg-[#c2b280] border-2 border-black px-3 py-2 focus:outline-none" />
-            {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email.message}</p>}
-          </div>
+          {/* Form */}
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div>
+              <input placeholder="Full Name" {...register("name")} className="w-full h-11 px-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500" />
+              {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
+            </div>
 
-          {/* PASSWORD */}
-          <div>
-            <label className="block text-sm mb-1 text-white">
-              Password<span className="text-red-400">*</span>{" "}
-            </label>
-            <input type="password" {...register("password")} required className="w-full bg-[#c2b280] border-2 border-black px-3 py-2 focus:outline-none" />
-            {errors.password && <p className="text-red-400 text-sm mt-1">{errors.password.message}</p>}
-          </div>
+            <div>
+              <input placeholder="Email" {...register("email")} className="w-full h-11 px-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500" />
+              {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
+            </div>
 
-          {/* CONFIRM PASSWORD */}
-          <div>
-            <label className="block text-sm mb-1 text-white">
-              Confirm Password<span className="text-red-400">*</span>
-            </label>
-            <input type="password" {...register("confirmPassword")} required className="w-full bg-[#c2b280] border-2 border-black px-3 py-2 focus:outline-none" />
-            {errors.confirmPassword && <p className="text-red-400 text-sm mt-1">{errors.confirmPassword.message}</p>}
-          </div>
+            <div>
+              <input type="password" placeholder="Password" {...register("password")} className="w-full h-11 px-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500" />
+              {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
+            </div>
 
-          {/* AVATAR */}
-          <div>
-            <label className="block text-sm mb-1 text-white">Avatar URL (optional)</label>
-            <input placeholder="https://..." {...register("avatarUrl")} className="w-full bg-[#c2b280] border-2 border-black px-3 py-2 focus:outline-none" />
-          </div>
+            <div>
+              <input type="password" placeholder="Confirm Password" {...register("confirmPassword")} className="w-full h-11 px-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500" />
+              {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>}
+            </div>
 
-          {/* BUTTON */}
-          <button type="submit" disabled={isPending} className="w-full bg-[#228b22] border-2 border-black py-2 text-white shadow-[4px_4px_0px_#000] active:translate-x-1 active:translate-y-1 active:shadow-none transition">
-            {isPending ? "Registering..." : "Create Account"}
-          </button>
-        </form>
+            <div>
+              <input placeholder="Avatar URL (optional)" {...register("avatarUrl")} className="w-full h-11 px-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500" />
+            </div>
 
-        <p className="text-sm text-center mt-4 text-white">
-          Already have an account?{" "}
-          <a href="/login" className="underline text-[#9acd32]">
-            Login
-          </a>
-        </p>
+            <button type="submit" disabled={isPending} className="w-full h-11 rounded-lg bg-green-600 hover:bg-green-700 text-white font-medium transition">
+              {isPending ? "Registering..." : "Create Account"}
+            </button>
+          </form>
+
+          {/* Footer */}
+          <p className="text-sm text-center text-gray-500">
+            Already have an account?{" "}
+            <a href="/login" className="text-green-700 font-medium hover:underline">
+              Login
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   );
