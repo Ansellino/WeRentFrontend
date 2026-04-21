@@ -1,53 +1,66 @@
-import { useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query'
-import { reviewsApi, ReviewsParams } from '@/lib/api/reviews'
-import { queryKeys } from '@/lib/utils'
-import type { Review, CreateReviewDto } from '@/lib/types'
- 
+import { useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
+import { reviewsApi, ReviewsParams } from "@/lib/api/reviews";
+import { queryKeys } from "@/lib/utils";
+import type { Review, CreateReviewDto } from "@/lib/types";
+
+type ReviewPage = {
+  data: Review[];
+  meta: {
+    page: number;
+    limit: number;
+    total: number;
+  };
+};
+
+type InfiniteReviews = {
+  pages: ReviewPage[];
+  pageParams: number[];
+};
 // Paginated review list — uses useInfiniteQuery for 'load more'
-export const useReviewList = (productId: string, params?: Omit<ReviewsParams, 'page'>) =>
+export const useReviewList = (productId: string, params?: Omit<ReviewsParams, "page">) =>
   useInfiniteQuery({
     queryKey: queryKeys.reviews.list(productId, params),
-    queryFn: ({ pageParam = 1 }) =>
-      reviewsApi.list(productId, { ...params, page: pageParam }),
+    queryFn: ({ pageParam = 1 }) => reviewsApi.list(productId, { ...params, page: pageParam }),
     getNextPageParam: (last) => {
-      const { page, limit, total } = last.meta
-      return page * limit < total ? page + 1 : undefined
+      const { page, limit, total } = last.meta;
+      return page * limit < total ? page + 1 : undefined;
     },
     initialPageParam: 1,
     staleTime: 1000 * 60,
     enabled: !!productId,
-  })
- 
+  });
+
 // Create review
 export const useCreateReview = (productId: string) => {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (dto: CreateReviewDto) => reviewsApi.create(productId, dto),
     onSuccess: () => {
       // Invalidate both review list and summary
-      qc.invalidateQueries({ queryKey: queryKeys.reviews.list(productId) })
-      qc.invalidateQueries({ queryKey: queryKeys.products.reviewSummary(productId) })
-      qc.invalidateQueries({ queryKey: queryKeys.products.detail(productId) })
+      qc.invalidateQueries({ queryKey: queryKeys.reviews.list(productId) });
+      qc.invalidateQueries({ queryKey: queryKeys.products.reviewSummary(productId) });
+      qc.invalidateQueries({ queryKey: queryKeys.products.detail(productId) });
     },
-  })
-}
- 
+  });
+};
+
 // Helpful toggle — optimistic update
 export const useToggleHelpful = (productId: string) => {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (reviewId: string) => reviewsApi.toggleHelpful(reviewId),
- 
+
     // Optimistically update before server responds
     onMutate: async (reviewId) => {
-      await qc.cancelQueries({ queryKey: queryKeys.reviews.list(productId) })
-      const previous = qc.getQueryData(queryKeys.reviews.list(productId))
- 
-      qc.setQueryData(queryKeys.reviews.list(productId), (old: any) => {
-        if (!old) return old
+      await qc.cancelQueries({ queryKey: queryKeys.reviews.list(productId) });
+      const previous = qc.getQueryData(queryKeys.reviews.list(productId));
+
+      qc.setQueryData(queryKeys.reviews.list(productId), (old: InfiniteReviews | undefined) => {
+        if (!old) return old;
+
         return {
           ...old,
-          pages: old.pages.map((page: any) => ({
+          pages: old.pages.map((page: ReviewPage) => ({
             ...page,
             data: page.data.map((r: Review) =>
               r.id === reviewId
@@ -56,35 +69,35 @@ export const useToggleHelpful = (productId: string) => {
                     isHelpful: !r.isHelpful,
                     helpfulCount: r.isHelpful ? r.helpfulCount - 1 : r.helpfulCount + 1,
                   }
-                : r
+                : r,
             ),
           })),
-        }
-      })
-      return { previous }
+        };
+      });
+      return { previous };
     },
- 
+
     // Roll back on error
     onError: (_err, _vars, ctx) => {
       if (ctx?.previous) {
-        qc.setQueryData(queryKeys.reviews.list(productId), ctx.previous)
+        qc.setQueryData(queryKeys.reviews.list(productId), ctx.previous);
       }
     },
- 
+
     onSettled: () => {
-      qc.invalidateQueries({ queryKey: queryKeys.reviews.list(productId) })
+      qc.invalidateQueries({ queryKey: queryKeys.reviews.list(productId) });
     },
-  })
-}
- 
+  });
+};
+
 // Delete review
 export const useDeleteReview = (productId: string) => {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (reviewId: string) => reviewsApi.remove(reviewId),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: queryKeys.reviews.list(productId) })
-      qc.invalidateQueries({ queryKey: queryKeys.products.reviewSummary(productId) })
+      qc.invalidateQueries({ queryKey: queryKeys.reviews.list(productId) });
+      qc.invalidateQueries({ queryKey: queryKeys.products.reviewSummary(productId) });
     },
-  })
-}
+  });
+};

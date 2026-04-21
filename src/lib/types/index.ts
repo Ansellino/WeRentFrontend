@@ -1,31 +1,29 @@
 // ── Auth ─────────────────────────────────────────────
-export interface UpdateCartItemDto {
-  quantity: number
-  // add other updatable fields as needed
-}
 
 export interface User {
   id: string
   name: string
   email: string
   role: 'USER' | 'ADMIN'
+  avatarUrl?: string | null
   createdAt: string
 }
 
-// payload hasil login/register (dari backend service)
-export interface AuthPayload {
-  access_token: string
-  refresh_token: string
-  user: User
+export interface AuthUser {
+  id: string
+  name: string
+  email: string
+  avatarUrl?: string | null
 }
 
-// response dari controller (dibungkus success + data)
 export interface AuthResponse {
-  success: boolean
-  data: AuthPayload
+  access_token: string
+  refresh_token: string
+  user: AuthUser
 }
 
 // ── Product ──────────────────────────────────────────
+
 export interface Product {
   id: string
   name: string
@@ -65,6 +63,7 @@ export interface ReviewSummary {
 }
 
 // ── Review ───────────────────────────────────────────
+
 export interface Review {
   id: string
   productId: string
@@ -103,6 +102,7 @@ export interface CreateReviewDto {
 }
 
 // ── Cart ─────────────────────────────────────────────
+
 export interface CartItem {
   id: string
   productId: string
@@ -130,7 +130,12 @@ export interface AddToCartDto {
   rentalDays: number
 }
 
-// ── Shipment ──────────────────────────────────────────
+export interface UpdateCartItemDto {
+  quantity: number
+}
+
+// ── Shipment ─────────────────────────────────────────
+
 export interface ShipmentOption {
   id: string
   courier: string
@@ -141,6 +146,7 @@ export interface ShipmentOption {
 }
 
 // ── Order ────────────────────────────────────────────
+
 export type OrderStatus =
   | 'PENDING'
   | 'PAID'
@@ -172,15 +178,13 @@ export interface Order {
   createdAt: string
 }
 
-// ── Shared ───────────────────────────────────────────
+// ── Shared (untuk module lain yang masih pakai wrapper) ─────────
 
-// generic success response (buat endpoint lain)
 export interface ApiSuccess<T> {
   success: true
   data: T
 }
 
-// error dari backend (udah lo pake format ini di Nest)
 export interface ApiError {
   success: false
   error: {

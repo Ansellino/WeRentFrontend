@@ -17,10 +17,12 @@ export const useOrderDetail = (id: string) =>
 
 export const useCheckout = () => {
   const qc = useQueryClient()
+
   return useMutation({
     mutationFn: ordersApi.checkout,
+
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: queryKeys.cart })
+      qc.invalidateQueries({ queryKey: queryKeys.cart.all() })
       qc.invalidateQueries({ queryKey: queryKeys.orders.all })
     },
   })

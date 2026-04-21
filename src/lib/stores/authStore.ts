@@ -1,16 +1,16 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { User } from '@/lib/types'
+import type { AuthUser } from '@/lib/types' // 🔥 ganti ini
 
 interface AuthState {
   token: string | null
   refreshToken: string | null
-  user: User | null
+  user: AuthUser | null // 🔥 ganti ini
   isAuthenticated: boolean
 
   hasHydrated: boolean
 
-  setAuth: (token: string, refreshToken: string, user: User) => void
+  setAuth: (token: string, refreshToken: string, user: AuthUser) => void // 🔥 ganti ini
   logout: () => void
   setHasHydrated: (state: boolean) => void
 }
