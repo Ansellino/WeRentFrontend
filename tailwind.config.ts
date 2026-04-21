@@ -6,7 +6,6 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-<<<<<<< HEAD
         border: "oklch(var(--border))",
         input: "oklch(var(--input))",
         ring: "oklch(var(--ring))",
@@ -46,12 +45,6 @@ const config: Config = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
-=======
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-        border: "hsl(var(--border))",
-        ring: "hsl(var(--border))",
->>>>>>> 4144975 (fix: update type to Product to resolve category error)
       },
     },
   },
