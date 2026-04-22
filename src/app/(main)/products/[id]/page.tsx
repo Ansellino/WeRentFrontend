@@ -111,7 +111,7 @@ export default function ProductDetailPage() {
           {/* CTA buttons */}
           <div className='flex gap-3'>
             <Button onClick={handleAddToCart} disabled={addingToCart || !availability?.available}
-              className='flex-1 bg-green-700 hover:bg-green-800'>
+              className='flex-1 bg-green-700 hover:bg-green-800 text-white'>
               {addingToCart ? 'Adding...' : 'Add to Cart'}
             </Button>
             <Button variant='outline' onClick={() => toggleWishlist({ productId: id, inWishlist })}>
