@@ -1,9 +1,9 @@
 'use client'
+import Image from 'next/image'
 import { useState } from 'react'
 import { formatDistanceToNow, parseISO } from 'date-fns'
 import { StarRating } from '@/components/shared/StarRating'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { useUIStore } from '@/lib/stores/uiStore'
 import type { Review } from '@/lib/types'
  
@@ -33,7 +33,7 @@ export function ReviewCard({ review, onHelpful }: Props) {
         </div>
         <div>
           <p className='font-medium text-sm'>{review.user.name}</p>
-          <p className='text-xs text-gray-400'>{timeAgo}{review.isEdited ? ' · edited' : ''}</p>
+          <p className='text-xs text-gray-400'>{timeAgo}{review.isEdited ? ' - edited' : ''}</p>
         </div>
         <StarRating value={review.rating} readonly className='ml-auto' />
       </div>
@@ -68,7 +68,7 @@ export function ReviewCard({ review, onHelpful }: Props) {
             <button key={url} onClick={() => openLightbox(review.mediaUrls, i)}
               className='w-16 h-16 rounded overflow-hidden border'
             >
-              <img src={url} alt='' className='w-full h-full object-cover' />
+              <Image src={url} alt='' width={64} height={64} className='w-full h-full object-cover' />
             </button>
           ))}
         </div>
