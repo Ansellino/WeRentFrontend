@@ -2,7 +2,8 @@ import axios from "axios";
 import { useAuthStore } from "@/lib/stores/authStore";
 
 export const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "/api",
+  // Always use same-origin path in browser; Next.js rewrites proxy this to backend.
+  baseURL: "/api",
   withCredentials: true,
 });
 
