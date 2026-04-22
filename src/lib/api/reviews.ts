@@ -10,19 +10,56 @@ export interface ReviewsParams {
 }
  
 export const reviewsApi = {
+  // list: (productId: string, params?: ReviewsParams) =>
+  //   apiClient.get<{
+  //     success: boolean
+  //     data: Review[]
+  //     meta: PaginatedResponse<Review>['meta']
+  //   }>(
+  //     `/reviews/product/${productId}`, { params }
+  //   ).then(r => ({ data: r.data.data, meta: r.data.meta })),
   list: (productId: string, params?: ReviewsParams) =>
-    apiClient.get<{
-      success: boolean
-      data: Review[]
-      meta: PaginatedResponse<Review>['meta']
-    }>(
-      `/reviews/product/${productId}`, { params }
-    ).then(r => ({ data: r.data.data, meta: r.data.meta })),
- 
-  create: (productId: string, dto: CreateReviewDto) =>
-    apiClient.post<{ success: boolean; data: Review }>(
-      `/reviews/product/${productId}`, dto
-    ).then(r => r.data.data),
+  apiClient.get(`/reviews/product/${productId}`, {
+    params: {
+      ...params,
+      // saya menambahkan fix agar rating array jadi string
+      rating: params?.rating?.join(',')
+    }
+  }).then(r => ({ data: r.data.data, meta: r.data.meta })),
+  
+  // create: (productId: string, dto: CreateReviewDto) =>
+  //   apiClient.post<{ success: boolean; data: Review }>(
+  //     `/reviews/product/${productId}`, dto
+  //   ).then(r => r.data.data),
+
+    create: (productId: string, dto: CreateReviewDto) => {
+    const token = localStorage.getItem('token')
+    console.log('TOKEN:', token)
+
+    return apiClient.post<{ success: boolean; data: Review }>(
+      `/reviews/product/${productId}`,
+      {
+        ...dto,
+        measurements: {
+          bust: 85,
+          waist: 70,
+          hips: 90
+        }
+      },
+      {
+        // saya menambahkan Authorization header agar tidak 400/401
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    ).then(r => r.data.data)
+     .catch(err => {
+       // saya menambahkan debug agar tahu error dari backend
+       console.error('CREATE REVIEW ERROR:', err?.response?.data || err)
+       throw err
+     })
+  },
+
   update: (reviewId: string, dto: Partial<Pick<CreateReviewDto, 'rating'|'comment'|'fit'>>) =>
     apiClient.patch<{ success: boolean; data: Review }>(`/reviews/${reviewId}`, dto)
       .then(r => r.data.data),
