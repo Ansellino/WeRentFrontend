@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation'
 import { useOrderDetail } from '@/lib/hooks/useOrders'
 import { useProductList } from '@/lib/hooks/useProducts'
 import Image from 'next/image'
+import ReviewForm from '@/components/review/ReviewForm'
 
 export default function OrderDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -98,6 +99,8 @@ export default function OrderDetailPage() {
           Total: Rp. {order.total.toLocaleString('id-ID')}
         </p>
       </div>
+
+      <ReviewForm productId={order.items[0].productId} />
 
     </div>
   )
