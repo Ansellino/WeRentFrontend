@@ -11,9 +11,13 @@ export default function CartPage() {
  
   if (isLoading) return <p>Loading cart...</p>
   if (!cart || cart.items.length === 0) return (
-    <div className='text-center py-20'>
-      <p className='text-gray-500 mb-4'>Your cart is empty</p>
-      <Button onClick={() => router.push('/')}>Browse Products</Button>
+    <div className='text-center py-10'>
+      <p className='text-gray-500 mb-4'>Your cart is still empty <br /> <br /> Browse 
+         <Button onClick={() => router.push('/products')} className='text-green-600 font-semibold underline hover:scale-105'>
+           Our Collection
+         </Button>
+         and fill your cart!
+      </p>
     </div>
   )
  
@@ -45,7 +49,7 @@ export default function CartPage() {
       <div className='border-t pt-4 flex justify-between items-center'>
         <p className='text-lg font-semibold'>Total: Rp {cart.total.toLocaleString('id-ID')}</p>
         <Button onClick={() => router.push('/checkout/shipment')}
-          className='bg-green-700 hover:bg-green-800'>
+          className='bg-green-700 hover:bg-green-800 text-white'>
           Proceed to Checkout
         </Button>
       </div>

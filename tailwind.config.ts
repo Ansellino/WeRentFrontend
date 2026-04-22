@@ -9,6 +9,12 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      
+      fontFamily: {
+        marcellus: ["var(--font-marcellus)", "serif"],
+      },
+     
+      
       colors: {
         border: "oklch(var(--border))",
         input: "oklch(var(--input))",

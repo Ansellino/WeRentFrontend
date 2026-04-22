@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { useProductList } from '@/lib/hooks/useProducts'
-import { ProductCard } from '@/components/product/ProductCard'
+import ProductCard from '@/components/product/ProductCard'
 import { Input } from '@/components/ui/input'
 import { LoadingSkeleton } from '@/components/shared/LoadingSkeleton'
 

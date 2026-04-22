@@ -3,12 +3,6 @@ import type { User } from "@/lib/types";
 
 // ================= TYPES =================
 
-// Generic API wrapper (sesuai backend)
-export interface ApiResponse<T> {
-  success: boolean;
-  data: T;
-}
-
 // Payload auth (login & register)
 export interface AuthPayload {
   access_token: string;
@@ -35,24 +29,24 @@ export const authApi = {
   // ---------- REGISTER ----------
   register: (data: RegisterInput) =>
     apiClient
-      .post<ApiResponse<AuthPayload>>("/auth/register", data)
-      .then((r) => r.data.data),
+      .post<AuthPayload>("/auth/register", data)
+      .then((r) => r.data),
 
   // ---------- LOGIN ----------
   login: (data: LoginInput) =>
     apiClient
-      .post<ApiResponse<AuthPayload>>("/auth/login", data)
-      .then((r) => r.data.data),
+      .post<AuthPayload>("/auth/login", data)
+      .then((r) => r.data),
 
   // ---------- GET PROFILE ----------
   me: () =>
     apiClient
-      .get<ApiResponse<User>>("/auth/me", {
+      .get<User>("/auth/me", {
         headers: {
           "Cache-Control": "no-cache",
         },
       })
-      .then((r) => r.data.data),
+      .then((r) => r.data),
 
   // ---------- REFRESH TOKEN ----------
   refresh: (refresh_token: string) =>

@@ -10,9 +10,9 @@ const nextConfig = {
       {
          protocol: "https",
          hostname: "placehold.co",
-       },
+       }
     ],
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
