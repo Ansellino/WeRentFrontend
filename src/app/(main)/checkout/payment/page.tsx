@@ -60,7 +60,7 @@ export default function PaymentPage() {
         <span>Rp {((cart.total) + (checkout.selectedCourier?.price ?? 0)).toLocaleString('id-ID')}</span>
       </div>
       <Button onClick={handlePay} disabled={isPending}
-        className='w-full bg-green-700 hover:bg-green-800'>
+        className='w-full bg-green-700 hover:bg-green-800 text-white'>
         {isPending ? 'Processing...' : 'Confirm & Pay'}
       </Button>
     </div>

@@ -6,7 +6,7 @@ import { useAuthStore } from '@/lib/stores/authStore'
 export const useWishlist = () => {
   const isAuthenticated = useAuthStore(s => s.isAuthenticated)
   return useQuery({
-    queryKey: queryKeys.wishlist,
+    queryKey: queryKeys.wishlist.all(),
     queryFn: wishlistApi.get,
     enabled: isAuthenticated,
   })
@@ -17,6 +17,6 @@ export const useToggleWishlist = () => {
   return useMutation({
     mutationFn: ({ productId, inWishlist }: { productId: string; inWishlist: boolean }) =>
       inWishlist ? wishlistApi.remove(productId) : wishlistApi.add(productId),
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.wishlist }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.wishlist.all() }),
   })
 }
