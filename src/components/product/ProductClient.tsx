@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import React, { useState, useMemo, useEffect } from "react";
 import { Product } from "@/lib/types";
 import ProductGrid from "@/components/product/ProductGrid";
@@ -47,10 +48,12 @@ export default function ProductsClient({ initialProducts }: { initialProducts: P
         <div className="relative w-full h-[300px] md:h-[400px] rounded-1xl overflow-hidden mb-12 shadow-lg">
           {/* Gambar Background Slider */}
           {BANNER_IMAGES.map((src, index) => (
-            <img
+            <Image
               key={index}
               src={src}
               alt={`Fashion Banner ${index + 1}`}
+              fill
+              sizes="100vw"
               className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
                 index === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0"
               }`}

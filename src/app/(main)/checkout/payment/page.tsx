@@ -5,6 +5,13 @@ import { useCheckout } from '@/lib/hooks/useOrders'
 import { useUIStore } from '@/lib/stores/uiStore'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/hooks/use-toast'
+import { AxiosError } from 'axios'
+
+type CheckoutErrorResponse = {
+  error?: {
+    code?: string
+  }
+}
  
 export default function PaymentPage() {
   const router = useRouter()
@@ -27,7 +34,7 @@ export default function PaymentPage() {
           toast({ title: 'Order placed!', description: `Order #${order.id.slice(0,8)}` })
           router.push(`/orders/${order.id}`)
         },
-        onError: (err: any) => {
+        onError: (err: AxiosError<CheckoutErrorResponse>) => {
           const code = err.response?.data?.error?.code
           if (code === 'DATE_UNAVAILABLE') {
             toast({ title: 'Date conflict', description: 'Some items are no longer available', variant: 'destructive' })

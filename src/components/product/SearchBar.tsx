@@ -1,6 +1,12 @@
 import { Search } from "lucide-react";
 
-export default function SearchBar({ value, onChange, placeholder = "Search..." }: any) {
+type SearchBarProps = {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+};
+
+export default function SearchBar({ value, onChange, placeholder = "Search..." }: SearchBarProps) {
   return (
     <div className="relative flex w-full items-center text-neutral-400 focus-within:text-neutral-900 transition-colors">
       <Search className="absolute left-0 h-4 w-4" />

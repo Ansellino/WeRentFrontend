@@ -2,6 +2,7 @@
 import { useCart, useRemoveCartItem } from '@/lib/hooks/useCart'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
+import Image from 'next/image'
 import { format, parseISO } from 'date-fns'
  
 export default function CartPage() {
@@ -27,8 +28,13 @@ export default function CartPage() {
       <div className='space-y-4'>
         {cart.items.map(item => (
           <div key={item.id} className='border rounded-lg p-4 flex gap-4'>
-            <img src={item.productImage} alt={item.productName}
-              className='w-20 h-20 object-cover rounded' />
+            <Image
+              src={item.productImage}
+              alt={item.productName}
+              width={80}
+              height={80}
+              className='w-20 h-20 object-cover rounded'
+            />
             <div className='flex-1 space-y-1'>
               <p className='font-medium'>{item.productName}</p>
               <p className='text-sm text-gray-500'>Size: {item.size}</p>

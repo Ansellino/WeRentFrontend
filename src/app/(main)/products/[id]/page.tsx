@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { format } from 'date-fns';
+import Image from 'next/image';
 import {
   useProductDetail,
   useAvailability,
@@ -71,9 +72,11 @@ export default function ProductDetailPage() {
     <div className="space-y-8">
       {/* Product images + info */}
       <div className="grid md:grid-cols-2 gap-8">
-        <img
+        <Image
           src={product.images[0]}
           alt={product.name}
+          width={800}
+          height={1000}
           className="rounded-lg w-full object-cover"
         />
         <div className="space-y-4">
