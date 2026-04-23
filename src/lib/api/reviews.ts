@@ -1,5 +1,5 @@
 import { apiClient } from '@/lib/api/client'
-import type { Review, CreateReviewDto, PaginatedResponse } from '@/lib/types'
+import type { Review, CreateReviewDto } from '@/lib/types'
  
 export interface ReviewsParams {
   page?: number
@@ -10,14 +10,6 @@ export interface ReviewsParams {
 }
  
 export const reviewsApi = {
-  // list: (productId: string, params?: ReviewsParams) =>
-  //   apiClient.get<{
-  //     success: boolean
-  //     data: Review[]
-  //     meta: PaginatedResponse<Review>['meta']
-  //   }>(
-  //     `/reviews/product/${productId}`, { params }
-  //   ).then(r => ({ data: r.data.data, meta: r.data.meta })),
   list: (productId: string, params?: ReviewsParams) =>
   apiClient.get(`/reviews/product/${productId}`, {
     params: {
@@ -26,11 +18,14 @@ export const reviewsApi = {
       rating: params?.rating?.join(',')
     }
   }).then(r => ({ data: r.data.data, meta: r.data.meta })),
-  
-  // create: (productId: string, dto: CreateReviewDto) =>
-  //   apiClient.post<{ success: boolean; data: Review }>(
-  //     `/reviews/product/${productId}`, dto
-  //   ).then(r => r.data.data),
+
+  // check if current user already reviewed this product
+  hasReviewed: (productId: string) =>
+    apiClient
+      .get<{ success: boolean; data: { hasReviewed: boolean } }>(
+        `/reviews/product/${productId}/me`
+      )
+      .then(r => r.data.data),
 
     create: (productId: string, dto: CreateReviewDto) => {
     const token = localStorage.getItem('token')

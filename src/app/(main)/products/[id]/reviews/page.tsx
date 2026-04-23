@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { useParams, useSearchParams } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { useReviewList, useToggleHelpful } from '@/lib/hooks/useReviews'
 import { useReviewSummary } from '@/lib/hooks/useProducts'
 import { ReviewSummary } from '@/components/review/ReviewSummary'
@@ -9,12 +9,9 @@ import { RatingFilter } from '@/components/review/RatingFilter'
 import { Button } from '@/components/ui/button'
 import { useInView } from 'react-intersection-observer'
 import { useEffect } from 'react'
-import ReviewForm from '@/components/review/ReviewForm'
  
 export default function ReviewsPage() {
   const { id: productId } = useParams<{ id: string }>()
-  const searchParams = useSearchParams()
-  const orderId = searchParams.get('orderId') || undefined
   const [ratingFilter, setRatingFilter] = useState<number[]>([])
   const [sort, setSort] = useState<'newest' | 'helpful'>('newest')
   const [hasMediaOnly, setHasMediaOnly] = useState(false)
