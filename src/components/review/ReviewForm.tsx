@@ -20,11 +20,30 @@ export default function ReviewForm({
     hasReviewed = false,
     orderDetail,
     orderId,
+    disabled = false,
 }: {
     productId: string
-    onSubmit?: (data: any) => void
+    onSubmit?: (data: {
+        rating: number
+        comment: string
+        fit: FitType
+        orderId?: string
+        orderDetail?: {
+            size?: string
+            quantity?: number
+            rentalDuration?: number
+        }
+        measurements: {
+            height: number
+            weight: number
+            bust: number
+            waist: number
+            hips: number
+        }
+    }) => void
     hasReviewed?: boolean
     orderId?: string
+    disabled?: boolean
     orderDetail?: {
         size?: string
         quantity?: number
@@ -38,15 +57,23 @@ export default function ReviewForm({
     const [loading, setLoading] = useState(false)
     const [isReviewed, setIsReviewed] = useState(false)
 
-    useEffect(() => {
-        if (!orderId) return
+    const isDisabled = disabled || isReviewed || hasReviewed
 
-        // default: belum direview
+useEffect(() => {
+    // kalau dari backend sudah pernah review
+    if (hasReviewed) {
+        setIsReviewed(true)
+        return
+    }
+
+    // reset hanya ketika order berubah
+    if (orderId) {
         setIsReviewed(false)
-    }, [orderId])
+    }
+}, [orderId, hasReviewed])
 
     const handleSubmit = async () => {
-        if (isReviewed) {
+        if (isDisabled) {
             return alert('Kamu sudah pernah mereview produk ini')
         }
         if (!rating) return alert('Rating tidak boleh kosong')
@@ -85,15 +112,25 @@ export default function ReviewForm({
             setRating(0)
             setComment('')
             setFit('true')
-        } catch (err: any) {
-            console.error(err)
-            const code = err?.response?.data?.error?.code
+        } catch (err: unknown) {
+            const error = err as {
+                response?: {
+                    data?: {
+                        error?: {
+                            code?: string
+                            message?: string
+                        }
+                    }
+                }
+            }
+            console.error(error)
+            const code = error?.response?.data?.error?.code
 
             if (code === 'ALREADY_REVIEWED') {
                 setIsReviewed(true)
                 alert('Kamu sudah pernah mereview produk ini')
             } else if (code === 'ERROR') {
-                alert(err?.response?.data?.error?.message)
+                alert(error?.response?.data?.error?.message)
             } else {
                 alert('Gagal submit review')
             }
@@ -105,7 +142,7 @@ export default function ReviewForm({
     return (
         <div className="border border-border rounded-xl p-5 space-y-4 bg-background">
             <h3 className="text-lg font-semibold">Tulis Review anda disini</h3>
-            {isReviewed && (
+            {isDisabled && (
                 <p className="text-sm text-red-500">
                     Kamu sudah pernah memberikan review untuk produk ini
                 </p>
@@ -124,7 +161,7 @@ export default function ReviewForm({
                             ? 'fill-yellow-400 text-yellow-400'
                             : 'text-gray-300'
                         }`}
-                        onClick={() => !isReviewed && setRating(star)}
+                        onClick={() => !isDisabled && setRating(star)}
                         onMouseEnter={() => setHover(star)}
                         onMouseLeave={() => setHover(0)}
                         />
@@ -143,7 +180,7 @@ export default function ReviewForm({
                 ].map((item) => (
                     <button
                         key={item.value}
-                        onClick={() => !isReviewed && setFit(item.value as FitType)}
+                        onClick={() => !isDisabled && setFit(item.value as FitType)}
                         className={`px-3 py-1 rounded-full border transition ${
                             fit === item.value
                             ? 'bg-green-500 text-white border-green-500'
@@ -165,17 +202,25 @@ export default function ReviewForm({
                     placeholder="Bagaimana pengalaman kamu?"
                     className="w-full border border-border rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
                     rows={3}
-                    disabled={isReviewed}
+                    disabled={isDisabled}
                 />
             </div>
 
             {/* tombol submit */}
             <button
-                onClick={handleSubmit}
-                disabled={loading || isReviewed}
-                className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-md transition"
+                type="button"
+                onClick={() => {
+                    if (loading || isDisabled) return
+                    handleSubmit()
+                }}
+                disabled={loading || isDisabled}
+                className={`w-full py-2 rounded-md transition ${
+                    loading || isDisabled
+                        ? 'bg-gray-400 cursor-not-allowed'
+                        : 'bg-green-600 hover:bg-green-700 text-white'
+                }`}
             >
-                {isReviewed ? 'Sudah Direview' : loading ? 'Mengirim...' : 'Kirim Review'}
+                {isDisabled ? 'Sudah Direview' : loading ? 'Mengirim...' : 'Kirim Review'}
             </button>
         </div>
     )
