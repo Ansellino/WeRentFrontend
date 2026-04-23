@@ -26,6 +26,12 @@ type LoginInput = {
 // ================= API =================
 
 export const authApi = {
+  // ================= Update AvatarUrl =================
+  updateAvatarUrl: (avatarUrl: string) =>
+    apiClient
+      .put<User>("/auth/update-avatar", { avatarUrl })
+      .then((r) => r.data),
+
   // ---------- REGISTER ----------
   register: (data: RegisterInput) =>
     apiClient
@@ -51,10 +57,10 @@ export const authApi = {
   // ---------- REFRESH TOKEN ----------
   refresh: (refresh_token: string) =>
     apiClient
-      .post<{ access_token: string; refresh_token: string }>(
-        "/auth/refresh",
-        { refresh_token }
-      )
+      .post<{
+        access_token: string;
+        refresh_token: string;
+      }>("/auth/refresh", { refresh_token })
       .then((r) => r.data),
 
   // ---------- LOGOUT ----------
