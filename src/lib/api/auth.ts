@@ -34,11 +34,15 @@ export const authApi = {
 
   // ---------- REGISTER ----------
   register: (data: RegisterInput) =>
-    apiClient.post<AuthPayload>("/auth/register", data).then((r) => r.data),
+    apiClient
+      .post<AuthPayload>("/auth/register", data)
+      .then((r) => r.data),
 
   // ---------- LOGIN ----------
   login: (data: LoginInput) =>
-    apiClient.post<AuthPayload>("/auth/login", data).then((r) => r.data),
+    apiClient
+      .post<AuthPayload>("/auth/login", data)
+      .then((r) => r.data),
 
   // ---------- GET PROFILE ----------
   me: () =>

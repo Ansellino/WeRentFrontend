@@ -5,6 +5,13 @@ import { useCheckout } from '@/lib/hooks/useOrders'
 import { useUIStore } from '@/lib/stores/uiStore'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/hooks/use-toast'
+import { isAxiosError } from 'axios'
+
+type CheckoutErrorResponse = {
+  error?: {
+    code?: string
+  }
+}
  
 export default function PaymentPage() {
   const router = useRouter()
@@ -27,8 +34,10 @@ export default function PaymentPage() {
           toast({ title: 'Order placed!', description: `Order #${order.id.slice(0,8)}` })
           router.push(`/orders/${order.id}`)
         },
-        onError: (err: any) => {
-          const code = err.response?.data?.error?.code
+        onError: (err: Error) => {
+          const code = isAxiosError<CheckoutErrorResponse>(err)
+            ? err.response?.data?.error?.code
+            : undefined
           if (code === 'DATE_UNAVAILABLE') {
             toast({ title: 'Date conflict', description: 'Some items are no longer available', variant: 'destructive' })
             router.push('/cart')
@@ -60,7 +69,7 @@ export default function PaymentPage() {
         <span>Rp {((cart.total) + (checkout.selectedCourier?.price ?? 0)).toLocaleString('id-ID')}</span>
       </div>
       <Button onClick={handlePay} disabled={isPending}
-        className='w-full bg-green-700 hover:bg-green-800'>
+        className='w-full bg-green-700 hover:bg-green-800 text-white'>
         {isPending ? 'Processing...' : 'Confirm & Pay'}
       </Button>
     </div>

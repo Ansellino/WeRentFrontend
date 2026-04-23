@@ -15,10 +15,16 @@ export default function ReviewsPage() {
   const [ratingFilter, setRatingFilter] = useState<number[]>([])
   const [sort, setSort] = useState<'newest' | 'helpful'>('newest')
   const [hasMediaOnly, setHasMediaOnly] = useState(false)
+
+  // saya menambahkan code ini
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [ratingFilter, sort, hasMediaOnly])
  
   const { data: summary } = useReviewSummary(productId)
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useReviewList(productId, {
+      // saya menyesuaikan type agar sesuai dengan hook (tetap kirim array)
       rating: ratingFilter.length ? ratingFilter : undefined,
       sort,
       hasMedia: hasMediaOnly || undefined,
@@ -29,8 +35,8 @@ export default function ReviewsPage() {
   // Infinite scroll trigger
   const { ref: loadMoreRef, inView } = useInView()
   useEffect(() => {
-    if (inView && hasNextPage) fetchNextPage()
-  }, [inView, hasNextPage])
+    if (inView && hasNextPage && !isFetchingNextPage) fetchNextPage()
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage])
  
   const reviews = data?.pages.flatMap(p => p.data) ?? []
   const totalReviews = data?.pages[0]?.meta.total ?? 0
@@ -88,7 +94,11 @@ export default function ReviewsPage() {
               <ReviewCard
                 key={review.id}
                 review={review}
-                onHelpful={() => toggleHelpful(review.id)}
+                onHelpful={() => {
+                  // saya menambahkan agar klik helpful juga mengaktifkan filter helpful
+                  toggleHelpful(review.id)
+                  setSort('helpful')
+                }}
               />
             ))
           )}

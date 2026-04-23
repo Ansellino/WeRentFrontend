@@ -53,7 +53,7 @@ export default function ShipmentPage() {
         </div>
       )}
 
-      <Button onClick={handleNext} disabled={!checkout.selectedCourier} className="w-full bg-green-700 hover:bg-green-800">
+      <Button onClick={handleNext} disabled={!checkout.selectedCourier} className="w-full bg-green-700 hover:bg-green-800 text-white">
         Continue to Payment
       </Button>
     </div>
