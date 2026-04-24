@@ -158,6 +158,7 @@ export type OrderStatus =
   | 'CANCELLED'
 
 export interface OrderItem {
+  id: string
   productId: string
   productName: string
   size: string
@@ -166,6 +167,7 @@ export interface OrderItem {
   rentalDays: number
   endDate: string
   subtotal: number
+  review?: { id: string } | null
 }
 
 export interface Order {

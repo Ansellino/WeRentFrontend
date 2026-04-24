@@ -1,6 +1,7 @@
 import { apiClient } from '@/lib/api/client'
-import type { Review, CreateReviewDto, PaginatedResponse } from '@/lib/types'
- 
+import type { Review, PaginatedResponse } from '@/lib/types'
+
+// ===== QUERY PARAMS =====
 export interface ReviewsParams {
   page?: number
   limit?: number
@@ -9,7 +10,7 @@ export interface ReviewsParams {
   hasMedia?: boolean
 }
 
-// ===== DTO (HARUS SAMA DENGAN BACKEND) =====
+// ===== DTO =====
 export interface CreateReviewDto {
   rating: number
   comment: string
@@ -26,21 +27,33 @@ export type UpdateReviewDto = Partial<CreateReviewDto>
 
 // ===== API =====
 export const reviewsApi = {
-  // ===== LIST =====
   list: async (productId: string, params?: ReviewsParams) => {
-    const res = await apiClient.get<{
-      success: boolean
-      data: Review[]
-      meta: PaginatedResponse<Review>['meta']
-    }>(`/reviews/product/${productId}`, { params })
+  const res = await apiClient.get<{
+    success: boolean
+    data: Review[]
+    meta: PaginatedResponse<Review>['meta']
+  }>(`/reviews/product/${productId}`, {
+    params,
+    paramsSerializer: (p) => {
+      const search = new URLSearchParams()
+      Object.entries(p).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          value.forEach((v) => search.append(key, String(v)))
+        } else if (value !== undefined) {
+          search.append(key, String(value))
+        }
+      })
+      return search.toString()
+    },
+  })
 
-    return {
-      data: res.data.data,
-      meta: res.data.meta,
-    }
-  },
+  return {
+    data: res.data.data,
+    meta: res.data.meta,
+  }
+},
 
-  // ===== CREATE =====
+
   create: async (productId: string, dto: CreateReviewDto) => {
     const res = await apiClient.post<{
       success: boolean
@@ -50,7 +63,6 @@ export const reviewsApi = {
     return res.data.data
   },
 
-  // ===== UPDATE =====
   update: async (reviewId: string, dto: UpdateReviewDto) => {
     const res = await apiClient.patch<{
       success: boolean
@@ -60,19 +72,14 @@ export const reviewsApi = {
     return res.data.data
   },
 
-  // ===== DELETE =====
   remove: async (reviewId: string) => {
     await apiClient.delete(`/reviews/${reviewId}`)
   },
 
-  // ===== HELPFUL =====
   toggleHelpful: async (reviewId: string) => {
     const res = await apiClient.post<{
       success: boolean
-      data: {
-        helpful: boolean
-        helpfulCount: number
-      }
+      data: { helpful: boolean; helpfulCount: number }
     }>(`/reviews/${reviewId}/helpful`)
 
     return res.data.data
@@ -81,9 +88,7 @@ export const reviewsApi = {
   checkHelpful: async (reviewId: string) => {
     const res = await apiClient.get<{
       success: boolean
-      data: {
-        helpful: boolean
-      }
+      data: { helpful: boolean }
     }>(`/reviews/${reviewId}/helpful`)
 
     return res.data.data

@@ -6,9 +6,7 @@ import { useState } from "react";
 
 export default function ProfilePage() {
   const { data: user, isLoading, isError } = useProfile();
-
-  const { data: updateAvatarUrl, mutate: updateAvatarUrlMutate } =
-    useUpdateAvatarUrl();
+  const { mutate: updateAvatarUrlMutate } = useUpdateAvatarUrl();
   const [avatarUrl, setAvatarUrl] = useState(user?.avatarUrl || "");
 
   if (isLoading) {
