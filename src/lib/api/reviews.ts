@@ -1,7 +1,6 @@
 import { apiClient } from '@/lib/api/client'
-import type { Review, PaginatedResponse } from '@/lib/types'
-
-// ===== QUERY PARAMS =====
+import type { Review, CreateReviewDto, PaginatedResponse } from '@/lib/types'
+ 
 export interface ReviewsParams {
   page?: number
   limit?: number

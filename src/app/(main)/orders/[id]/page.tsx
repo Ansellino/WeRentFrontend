@@ -5,6 +5,7 @@ import { useOrderDetail } from '@/lib/hooks/useOrders'
 import { useProductList } from '@/lib/hooks/useProducts'
 import Image from 'next/image'
 import Link from 'next/link'
+import ReviewForm from '@/components/review/ReviewForm'
 
 export default function OrderDetailPage() {
   const router = useRouter()
@@ -101,5 +102,8 @@ export default function OrderDetailPage() {
       })}
       </div>
    </div>
+      <ReviewForm productId={order.items[0].productId} />
+
+    </div>
   )
 }

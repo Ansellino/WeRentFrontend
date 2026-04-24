@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { authApi } from "@/lib/api/auth";
 import { queryKeys } from "@/lib/utils";
 import { useAuthStore } from "@/lib/stores/authStore";
@@ -9,9 +9,18 @@ export const useProfile = () => {
   return useQuery({
     queryKey: queryKeys.auth.me(),
     queryFn: authApi.me,
+
     enabled: !!token,
     retry: false,
     staleTime: 0,
     refetchOnMount: true,
+  });
+};
+
+export const useUpdateAvatarUrl = () => {
+  const token = useAuthStore((s) => s.token);
+
+  return useMutation({
+    mutationFn: (avatarUrl: string) => authApi.updateAvatarUrl(avatarUrl),
   });
 };
