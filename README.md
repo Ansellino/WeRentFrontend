@@ -1,166 +1,123 @@
-# WeRent Frontend
+# WeRent — Fashion Rental Platform
 
-Frontend project untuk platform rental fashion WeRent, dibangun dengan Next.js App Router, TypeScript, Tailwind CSS, shadcn/ui, TanStack Query, Axios, dan Zustand.
+> A full-stack fashion rental web app built by **Tim Elang**
+
+🌐 **Live Demo**: [we-rent-frontend-dusky.vercel.app](https://we-rent-frontend-dusky.vercel.app/)
+📦 **Backend Repo**: [github.com/ElangRevoU/WeRentBackend](https://github.com/ElangRevoU/WeRentBackend)
+
+---
+
+## Overview
+
+WeRent is a fashion rental platform that allows users to browse, rent, and review clothing items. Built with a modern tech stack and focused on a seamless rental experience — from browsing to checkout to post-rental review.
+
+---
+
+## Screenshots
+
+
+
+---
+
+## Features
+
+- 🔐 **Authentication** — Register, login, JWT-based auth with refresh token rotation
+- 👗 **Product Browsing** — Search, filter by category, image carousel banner
+- 🛒 **Cart & Checkout** — Add to cart, select rental dates, courier selection
+- 📦 **Order Management** — Track orders, view order detail per item
+- ⭐ **Review System** — Rate and review per product, fit scale chart, helpful votes, media support
+- ❤️ **Wishlist** — Save favorite items
+- 👤 **Profile** — View profile, update avatar
+
+---
 
 ## Tech Stack
 
-- Next.js 14 (App Router)
-- React 18 + TypeScript
-- Tailwind CSS + shadcn/ui
-- TanStack Query
-- Axios
-- Zustand
+### Frontend
+| Tech | Usage |
+|---|---|
+| Next.js 14 (App Router) | Framework |
+| TypeScript | Type safety |
+| Tailwind CSS + shadcn/ui | Styling |
+| TanStack Query v5 | Server state & caching |
+| Axios | HTTP client |
+| Zustand | Client state management |
 
-## Menjalankan Project
+### Backend
+| Tech | Usage |
+|---|---|
+| NestJS | Framework |
+| Prisma | ORM |
+| PostgreSQL (Supabase) | Database |
+| Supabase Storage | File/media storage |
+| JWT | Authentication |
 
-1. Install dependency:
+---
+
+## Getting Started
+
+1. Clone the repo:
+
+```bash
+git clone https://github.com/ElangRevoU/WeRentFrontend.git
+cd WeRentFrontend
+```
+
+2. Install dependencies:
 
 ```bash
 npm install
 ```
 
-2. Jalankan development server:
+3. Setup environment:
+
+```bash
+cp .env.example .env.local
+```
+
+```env
+NEXT_PUBLIC_API_ORIGIN=https://werentbackend.onrender.com
+NEXT_PUBLIC_API_BASE_URL=https://werentbackend.onrender.com/api
+NEXT_PUBLIC_API_URL=https://werentbackend.onrender.com/api
+NEXT_PUBLIC_APP_NAME=WeRent
+```
+
+4. Run development server:
 
 ```bash
 npm run dev
 ```
 
-3. Buka aplikasi di browser:
-
-```text
-http://localhost:3000
-```
-
-## Scripts
-
-- `npm run dev` - menjalankan mode development
-- `npm run build` - build untuk production
-- `npm run start` - menjalankan hasil build production
-- `npm run lint` - menjalankan lint
-
-## Kontribusi
-
-Terima kasih sudah berkontribusi. Ikuti alur berikut supaya kolaborasi tim tetap rapi.
-
-1. Sync branch terbaru:
-
-```bash
-git checkout main
-git pull origin main
-```
-
-2. Buat branch baru dari `main`:
-
-```bash
-git checkout -b feat/nama-fitur
-```
-
-3. Kerjakan perubahan, lalu pastikan lolos pengecekan lokal:
-
-```bash
-npm run lint
-npx tsc --noEmit
-```
-
-4. Commit dengan pesan yang jelas:
-
-```bash
-git add .
-git commit -m "feat: tambah fitur x"
-```
-
-5. Push branch dan buka Pull Request ke `main`:
-
-```bash
-git push origin feat/nama-fitur
-```
-
-6. Di Pull Request, jelaskan:
-- tujuan perubahan
-- area/file yang diubah
-- langkah test manual
-- screenshot/video jika ada perubahan UI
-
-### Catatan Kontribusi
-
-- Jangan mengubah struktur folder utama tanpa diskusi tim.
-- Pisahkan PR besar menjadi beberapa PR kecil jika memungkinkan.
-- Gunakan tipe data di `src/lib/types` agar konsisten.
-- Gunakan query key terpusat di `src/lib/utils.ts` untuk cache React Query.
+---
 
 ## Project Structure
 
 ```text
 src/
 ├── app/                         # Next.js App Router pages
-│   ├── (auth)/
-│   │   ├── login/page.tsx
-│   │   └── register/page.tsx
-│   ├── (main)/
-│   │   ├── layout.tsx           # Main layout with navbar
-│   │   ├── page.tsx             # Home / product list
-│   │   ├── products/
-│   │   │   └── [id]/
-│   │   │       ├── page.tsx     # Product detail
-│   │   │       └── reviews/
-│   │   │           └── page.tsx # Full review page
-│   │   ├── cart/page.tsx
-│   │   ├── checkout/
-│   │   │   ├── shipment/page.tsx
-│   │   │   └── payment/page.tsx
-│   │   ├── orders/
-│   │   │   ├── page.tsx         # Order list
-│   │   │   └── [id]/page.tsx    # Order detail
-│   │   └── wishlist/page.tsx
-│   ├── layout.tsx               # Root layout
-│   └── providers.tsx            # TanStack Query + Zustand providers
+│   ├── (auth)/                  # Login & Register
+│   ├── (main)/                  # Main app pages
+│   │   ├── products/[id]/       # Product detail + reviews
+│   │   ├── cart/
+│   │   ├── orders/[id]/         # Order detail + review form
+│   │   └── wishlist/
+│   └── providers.tsx
 │
 ├── lib/
-│   ├── api/                     # Axios instance + all API functions
-│   │   ├── client.ts            # Axios config + interceptors
-│   │   ├── auth.ts
-│   │   ├── products.ts
-│   │   ├── cart.ts
-│   │   ├── orders.ts
-│   │   ├── reviews.ts
-│   │   ├── shipment.ts
-│   │   ├── upload.ts
-│   │   └── wishlist.ts
+│   ├── api/                     # Axios API functions
 │   ├── hooks/                   # TanStack Query hooks
-│   │   ├── useAuth.ts
-│   │   ├── useProducts.ts
-│   │   ├── useCart.ts
-│   │   ├── useOrders.ts
-│   │   ├── useReviews.ts
-│   │   ├── useShipment.ts
-│   │   ├── useUpload.ts
-│   │   └── useWishlist.ts
 │   ├── stores/                  # Zustand stores
-│   │   ├── authStore.ts
-│   │   └── uiStore.ts
-│   ├── types/                   # TypeScript interfaces
-│   │   └── index.ts
-│   └── utils.ts                 # Shared utilities
+│   └── types/                   # TypeScript interfaces
 │
 └── components/
-    ├── ui/                      # shadcn auto-generated
-    ├── layout/
-    │   ├── Navbar.tsx
-    │   └── Footer.tsx
     ├── product/
-    │   ├── ProductCard.tsx
-    │   └── ProductGrid.tsx
     ├── review/
-    │   ├── ReviewCard.tsx
-    │   ├── ReviewList.tsx
-    │   ├── ReviewSummary.tsx
-    │   ├── FitScaleChart.tsx
-    │   ├── RatingFilter.tsx
-    │   └── MediaViewer.tsx
     ├── cart/
-    │   └── CartItem.tsx
     └── shared/
-        ├── StarRating.tsx
-        ├── LoadingSkeleton.tsx
-        └── EmptyState.tsx
 ```
+
+---
+
+## Team
+
+**Tim Elang** — [github.com/ElangRevoU](https://github.com/ElangRevoU)

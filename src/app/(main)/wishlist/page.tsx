@@ -1,24 +1,26 @@
 'use client'
 import { useWishlist, useToggleWishlist } from '@/lib/hooks/useWishlist'
 import ProductCard from '@/components/product/ProductCard'
-import { Button } from '@/components/ui/button'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
- 
+
 export default function WishlistPage() {
   const { data: items, isLoading } = useWishlist()
   const { mutate: remove } = useToggleWishlist()
-  
-  const router = useRouter()
 
   if (isLoading) return <p>Loading wishlist...</p>
-  if (!items || items.length === 0) return (<p className='text-gray-500 py-10 text-center'>
-   You don’t seem to have any items in your wishlist yet <br /> <br />
-   Start browsing and find your favorites in <Link href='/' className='text-green-600 font-semibold underline hover:scale-105'>WeRent</Link> today!
-</p>)
+  if (!items || items.length === 0) return (
+    <p className='text-gray-500 py-10 text-center'>
+      You do not seem to have any items in your wishlist yet <br /> <br />
+      Start browsing and find your favorites in{' '}
+      <Link href='/' className='text-green-600 font-semibold underline hover:scale-105'>
+        WeRent
+      </Link>{' '}
+      today!
+    </p>
+  )
 
   return (
-   <div className='space-y-4'>
+    <div className='space-y-4'>
       <h1 className='text-xl font-semibold'>Wishlist ({items.length})</h1>
       <div className='grid grid-cols-2 md:grid-cols-3 gap-4'>
         {items.map(item => (

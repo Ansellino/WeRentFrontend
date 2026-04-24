@@ -9,7 +9,6 @@ export const useProfile = () => {
   return useQuery({
     queryKey: queryKeys.auth.me(),
     queryFn: authApi.me,
-
     enabled: !!token,
     retry: false,
     staleTime: 0,
@@ -18,8 +17,6 @@ export const useProfile = () => {
 };
 
 export const useUpdateAvatarUrl = () => {
-  const token = useAuthStore((s) => s.token);
-
   return useMutation({
     mutationFn: (avatarUrl: string) => authApi.updateAvatarUrl(avatarUrl),
   });
