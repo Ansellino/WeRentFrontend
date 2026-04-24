@@ -1,6 +1,7 @@
 import { apiClient } from '@/lib/api/client'
-import type { Review, CreateReviewDto, PaginatedResponse } from '@/lib/types'
- 
+import type { Review, PaginatedResponse } from '@/lib/types'
+
+// ===== QUERY PARAMS =====
 export interface ReviewsParams {
   page?: number
   limit?: number
@@ -8,35 +9,84 @@ export interface ReviewsParams {
   sort?: 'newest' | 'helpful'
   hasMedia?: boolean
 }
- 
+
+// ===== DTO (HARUS SAMA DENGAN BACKEND) =====
+export interface CreateReviewDto {
+  rating: number
+  comment: string
+  fit: 'small' | 'true' | 'large'
+  measurements: {
+    bust: number
+    waist: number
+    hips: number
+  }
+  mediaUrls?: string[]
+}
+
+export type UpdateReviewDto = Partial<CreateReviewDto>
+
+// ===== API =====
 export const reviewsApi = {
-  list: (productId: string, params?: ReviewsParams) =>
-    apiClient.get<{
+  // ===== LIST =====
+  list: async (productId: string, params?: ReviewsParams) => {
+    const res = await apiClient.get<{
       success: boolean
       data: Review[]
       meta: PaginatedResponse<Review>['meta']
-    }>(
-      `/reviews/product/${productId}`, { params }
-    ).then(r => ({ data: r.data.data, meta: r.data.meta })),
- 
-  create: (productId: string, dto: CreateReviewDto) =>
-    apiClient.post<{ success: boolean; data: Review }>(
-      `/reviews/product/${productId}`, dto
-    ).then(r => r.data.data),
-  update: (reviewId: string, dto: Partial<Pick<CreateReviewDto, 'rating'|'comment'|'fit'>>) =>
-    apiClient.patch<{ success: boolean; data: Review }>(`/reviews/${reviewId}`, dto)
-      .then(r => r.data.data),
- 
-  remove: (reviewId: string) =>
-    apiClient.delete(`/reviews/${reviewId}`),
- 
-  toggleHelpful: (reviewId: string) =>
-    apiClient.post<{ success: boolean; data: { helpful: boolean; helpfulCount: number } }>(
-      `/reviews/${reviewId}/helpful`
-    ).then(r => r.data.data),
- 
-  checkHelpful: (reviewId: string) =>
-    apiClient.get<{ success: boolean; data: { helpful: boolean } }>(
-      `/reviews/${reviewId}/helpful`
-    ).then(r => r.data.data),
+    }>(`/reviews/product/${productId}`, { params })
+
+    return {
+      data: res.data.data,
+      meta: res.data.meta,
+    }
+  },
+
+  // ===== CREATE =====
+  create: async (productId: string, dto: CreateReviewDto) => {
+    const res = await apiClient.post<{
+      success: boolean
+      data: Review
+    }>(`/reviews/product/${productId}`, dto)
+
+    return res.data.data
+  },
+
+  // ===== UPDATE =====
+  update: async (reviewId: string, dto: UpdateReviewDto) => {
+    const res = await apiClient.patch<{
+      success: boolean
+      data: Review
+    }>(`/reviews/${reviewId}`, dto)
+
+    return res.data.data
+  },
+
+  // ===== DELETE =====
+  remove: async (reviewId: string) => {
+    await apiClient.delete(`/reviews/${reviewId}`)
+  },
+
+  // ===== HELPFUL =====
+  toggleHelpful: async (reviewId: string) => {
+    const res = await apiClient.post<{
+      success: boolean
+      data: {
+        helpful: boolean
+        helpfulCount: number
+      }
+    }>(`/reviews/${reviewId}/helpful`)
+
+    return res.data.data
+  },
+
+  checkHelpful: async (reviewId: string) => {
+    const res = await apiClient.get<{
+      success: boolean
+      data: {
+        helpful: boolean
+      }
+    }>(`/reviews/${reviewId}/helpful`)
+
+    return res.data.data
+  },
 }
