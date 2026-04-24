@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import { format, parseISO } from 'date-fns'
+import Link from 'next/link'
  
 export default function CartPage() {
   const { data: cart, isLoading } = useCart()
@@ -14,10 +15,7 @@ export default function CartPage() {
   if (!cart || cart.items.length === 0) return (
     <div className='text-center py-10'>
       <p className='text-gray-500 mb-4'>Your cart is still empty <br /> <br /> Browse 
-         <Button onClick={() => router.push('/products')} className='text-green-600 font-semibold underline hover:scale-105'>
-           Our Collection
-         </Button>
-         and fill your cart!
+         <Link href='/products' className='text-green-600 font-semibold underline hover:scale-105'> Our Collection </Link> and fill your cart!
       </p>
     </div>
   )

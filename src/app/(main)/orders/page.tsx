@@ -3,6 +3,7 @@ import { useOrderList } from '@/lib/hooks/useOrders'
 import { useRouter } from 'next/navigation'
 import { format, parseISO } from 'date-fns'
 import { Button } from '@/components/ui/button'
+import Link from 'next/link'
  
 const statusColor: Record<string, string> = {
   PENDING: 'bg-yellow-100 text-yellow-800',
@@ -26,7 +27,7 @@ export default function OrdersPage() {
     return (
       <p className='text-gray-500 py-10 text-center'>
         You don&apos;t seem to have any orders yet <br /> <br />
-        Start browsing and rent your first item in <Button onClick={() => router.push('/')} className='text-green-600 font-semibold underline hover:scale-105'>WeRent</Button> today!
+        Start browsing and rent your first item in <Link href='/' className='text-green-600 font-semibold underline hover:scale-105'>WeRent</Link> today!
       </p>
     )
  
