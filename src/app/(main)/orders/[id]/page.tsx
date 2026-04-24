@@ -4,6 +4,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { useOrderDetail } from '@/lib/hooks/useOrders'
 import { useProductList } from '@/lib/hooks/useProducts'
 import Image from 'next/image'
+import Link from 'next/link'
 
 export default function OrderDetailPage() {
   const router = useRouter()
@@ -46,7 +47,8 @@ export default function OrderDetailPage() {
          return (
             <div
             key={`${item.productId}-${item.size}`}
-            className="border rounded-lg p-4 space-y-3 sm:flex sm:gap-4 sm:space-y-0"
+            className="border rounded-lg p-4 space-y-3 sm:flex sm:gap-4 sm:space-y-0 cursor-pointer hover:bg-gray-100"
+            onClick={() => router.push(`/products/${item.productId}`)}
             >
 
             {/* Image */}
@@ -86,15 +88,12 @@ export default function OrderDetailPage() {
                   Rp. {item.subtotal.toLocaleString('id-ID')}
                </p>
 
-               <button
-                  onClick={(e) => {
-                  e.stopPropagation()
-                  router.push(`/products/${item.productId}?review=true&orderId=${order.id}`)
-                  }}
+               <Link
+                  href={`/products/${item.productId}?review=true&orderId=${order.id}`}
                   className="mt-2 text-sm text-green-600 underline hover:text-green-700"
                >
                   Give Review
-               </button>
+               </Link>
 
             </div>
             </div>
