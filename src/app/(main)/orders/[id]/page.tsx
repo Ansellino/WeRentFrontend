@@ -1,11 +1,12 @@
 'use client'
 
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { useOrderDetail } from '@/lib/hooks/useOrders'
 import { useProductList } from '@/lib/hooks/useProducts'
 import Image from 'next/image'
 
 export default function OrderDetailPage() {
+  const router = useRouter()
   const { id } = useParams<{ id: string }>()
 
   const { data: order, isLoading } = useOrderDetail(id)
@@ -25,7 +26,7 @@ export default function OrderDetailPage() {
   if (!order) return <div>Order not found</div>
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-6">
+      <div className="max-w-4xl mx-auto p-6 space-y-6">
       
       {/* Header */}
       <div>
@@ -39,66 +40,67 @@ export default function OrderDetailPage() {
 
       {/* Items */}
       <div className="space-y-4">
-        {order.items.map((item) => {
-          const product = products?.find(p => p.id === item.productId)
-          
-          return (
+         {order.items.map((item) => {
+         const product = products?.find(p => p.id === item.productId)
+
+         return (
             <div
-              key={`${item.productId}-${item.size}`}
-              className="border rounded-lg p-4 flex gap-4"
+            key={`${item.productId}-${item.size}`}
+            className="border rounded-lg p-4 space-y-3 sm:flex sm:gap-4 sm:space-y-0"
             >
 
-              {/* Product Image */}
-              <Image
-                src={product?.images?.[0] || 'https://placehold.co/100x140'}
-                alt={item.productName}
-                width={100}
-                height={140}
-                className="w-24 h-32 object-cover rounded"
-              />
+            {/* Image */}
+            <div className="flex-shrink-0">
+               <Image
+                  src={product?.images?.[0] || 'https://placehold.co/100x140'}
+                  alt={item.productName}
+                  width={100}
+                  height={140}
+                  className="w-24 h-32 object-cover rounded"
+               />
+            </div>
 
-              {/* Info */}
-              <div className="flex-1 space-y-1">
-                <h2 className="font-medium">{item.productName}</h2>
+            {/* Info */}
+            <div className="flex-1 space-y-1">
+               <h2 className="font-medium line-clamp-2">
+                  {item.productName}
+               </h2>
 
-                <p className="text-sm text-gray-500">
-                  Size: {item.size}
-                </p>
+               <p className="text-sm text-gray-500">
+                  Size: {item.size} • Qty: {item.quantity}
+               </p>
 
-                <p className="text-sm text-gray-500">
-                  Quantity: {item.quantity}
-                </p>
+               <p className="text-sm text-gray-500">
+                  {item.rentalDays} days rental
+               </p>
 
-                <p className="text-sm text-gray-500">
-                  Rental Duration: {item.rentalDays} days
-                </p>
+               <p className="text-sm text-gray-400">
+                  {formatDate(item.startDate)} - {formatDate(item.endDate)}
+               </p>
+            </div>
 
-                <p className="text-sm text-gray-500">
-                  Rental Date: {formatDate(item.startDate)} to {formatDate(item.endDate)}
-                </p>
-              </div>
+            {/* Right section */}
+            <div className="flex flex-col justify-between items-start sm:items-end mt-2 sm:mt-0">
+          
+               <p className="font-semibold">
+                  Rp. {item.subtotal.toLocaleString('id-ID')}
+               </p>
 
-              {/* Price */}
-              <div className="text-right font-medium">
-                Rp. {item.subtotal.toLocaleString('id-ID')}
-              </div>
+               <button
+                  onClick={(e) => {
+                  e.stopPropagation()
+                  router.push(`/products/${item.productId}?review=true&orderId=${order.id}`)
+                  }}
+                  className="mt-2 text-sm text-green-600 underline hover:text-green-700"
+               >
+                  Give Review
+               </button>
 
             </div>
-          )
-        })}
+            </div>
+         )
+      })}
       </div>
-
-      {/* Total */}
-      <div className="border-t pt-4 text-right">
-        <p className='mb-2 text-lg font-semibold'> 
-          Shipping: Rp. {order.shippingCost.toLocaleString('id-ID')} 
-        </p>
-
-        <p className="text-lg font-semibold">
-          Total: Rp. {order.total.toLocaleString('id-ID')}
-        </p>
-      </div>
-
-    </div>
+   </div>
   )
 }
